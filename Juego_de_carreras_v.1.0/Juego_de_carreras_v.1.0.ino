@@ -6,12 +6,13 @@
 //**************************************************************************
 
 
+//declaración de variables iniciales
 int start_game = 0;
 int start_semaf = 0;
 
 volatile byte state = LOW;
 
-
+//se definen como constantes las variables asociadas a cada led para los pines
 const int LED1_J1 = 3;
 const int LED2_J1 = 4;
 const int LED3_J1 = 5;
@@ -31,10 +32,11 @@ const int LED6_J2 = 28;
 const int LED7_J2 = 29;
 const int LED8_J2 = 11;
 
-
+//pines de mostrar jugador ganador
 const int P1_WINN = 36;
 const int P2_WINN = 37;
 
+//push button integrados en la tiva
 const int P1 = PB_3;
 const int P2 = PE_0;
 
@@ -42,6 +44,8 @@ int contador1 = 0;
 int contador2 = 0;
 
 void setup() {
+  //se inicializan los pines de los leds integrados y pines de leds externas como salida
+  // y los push integrados como entradas en pullup interno
   pinMode(RED_LED, OUTPUT);
   pinMode(BLUE_LED, OUTPUT);
   pinMode(GREEN_LED, OUTPUT);
@@ -73,6 +77,7 @@ void setup() {
   pinMode(P1_WINN, OUTPUT);
   pinMode(P2_WINN, OUTPUT);
 
+//se declaran las interrupciones y asocian los eventos a cada push button
   attachInterrupt(digitalPinToInterrupt(PUSH1), button1, RISING);
   attachInterrupt(digitalPinToInterrupt(PUSH2), button2, RISING);
 
@@ -81,6 +86,7 @@ void setup() {
 }
 
 void loop() {
+  //en cada ciclo se verifica en que estado se encuentra de secuencia de semaforo o jugando
   if (start_semaf == 1){
     start_semaf = 2;
     semaforo();
@@ -92,7 +98,7 @@ void loop() {
 }
 
 void button1() {
-
+//evento para aumentar el jugador 1 si el semaforo esta en verde
   if (start_semaf !=2){
   start_semaf = 1;
   }
@@ -104,7 +110,7 @@ void button1() {
 }
 
 void button2() {
-  
+  //evento para aumentar el jugador 2 si el semaforo esta en verde
   if (start_semaf !=2){
   start_semaf = 1;
   }
@@ -117,21 +123,9 @@ void button2() {
 }
 
 
-void inter1(){
-  if (start_game ==1) {
-  contador1++;
-  //delay(500);
-  }
-}
-
-void inter2(){
-  if (start_game==1){
-  contador2++;
-  //delay(500);
-  }
-}
 
 void player2(){
+  //se fijan las configuraciones de enendido de led, según el valor del contador para player2
       switch (contador2){
         case 1: 
           digitalWrite(LED1_J2, HIGH);
@@ -220,6 +214,7 @@ void player2(){
 }
 
 void player1(){
+    //se fijan las configuraciones de enendido de led, según el valor del contador para player1
   switch (contador1){
         case 1: 
           digitalWrite(LED1_J1, HIGH);
@@ -309,6 +304,7 @@ void player1(){
 
 
 void resetear(){
+  //para inicializar los valores por default al empezar el juego
           contador1 = 0;
           contador2 = 0;
 
@@ -336,6 +332,7 @@ void resetear(){
 }
 
 void semaforo() {
+  //secuencia del semáforo con los leds rgb internos del tiva
   resetear();
   digitalWrite (RED_LED, HIGH);
   digitalWrite (GREEN_LED, LOW);
